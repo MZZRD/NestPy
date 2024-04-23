@@ -1,6 +1,5 @@
 from setuptools import setup
 # https://click.palletsprojects.com/en/8.1.x/setuptools/#setuptools-integration
-# TODO: include all the required packages
 
 setup(
     name="NestPy",

@@ -32,9 +32,6 @@ class Nest(object):
             "grant_type": "refresh_token",
         }
 
-        # Device variables
-        self.mode = "OFF"  # {OFF, HEAT, MANUAL_ECO}
-
     def refresh_access_token(self) -> None:
         """Refresh the access token"""
         try:
@@ -74,8 +71,8 @@ class Nest(object):
         traits = response["traits"]
         return traits
 
-    def set_device_traits(self, payload: dict[str, any]) -> None:
-        """Set device traits using the provided payload"""
+    def send_device_command(self, payload: dict[str, any]) -> None:
+        """Send command, included in payload, to the device"""
         # TODO: Duplicated code, find a more elegant solution
         try:
             r = requests.post(
@@ -127,13 +124,53 @@ class Nest(object):
         temperature_setpoint = setpoint_trait["heatCelsius"]
         return temperature_setpoint
 
+    def get_mode(self, traits: dict[str, any] = None) -> str:
+        """Get the current temperature setpoint in celsius"""
+        # If traits are not provided, fetch them
+        if traits is None:
+            traits = self.fetch_device_traits()
+
+        # Extract thermostat mode
+        mode_trait = traits["sdm.devices.traits.ThermostatMode"]
+        mode = mode_trait["mode"]
+        
+        # Extract thermostat eco mode
+        eco_trait = traits["sdm.devices.traits.ThermostatEco"]
+        eco_mode = eco_trait["mode"]
+        
+        # Override mode if eco is turned on
+        if eco_mode == "MANUAL_ECO":
+            mode = "MANUAL_ECO"
+        
+        return mode
+    
     def set_temperature_setpoint(self, value: float) -> None:
         """Set the temperature setpoint in celsius"""
+        # TODO: "400 client Error" if mode OFF or MANUAL_ECO
         payload = {
             "command": "sdm.devices.commands.ThermostatTemperatureSetpoint.SetHeat",
             "params": {"heatCelsius": value},
         }
-        self.set_device_traits(payload)
+        self.send_device_command(payload)
+        return None
+    
+    def set_mode(self, mode: str) -> None:
+        """Set the thermostat mode"""
+        
+        # Create payload depending on mode type
+        if mode == "MANUAL_ECO":
+            payload = {
+                "command": "sdm.devices.commands.ThermostatEco.SetMode",
+                "params": {"mode": "MANUAL_ECO"},
+            }
+        else:
+            payload = {
+                "command": "sdm.devices.commands.ThermostatMode.SetMode",
+                "params": {"mode": mode},
+            }
+            
+        self.send_device_command(payload)
+        return None
 
 
 @click.group()
@@ -141,9 +178,11 @@ class Nest(object):
 @click.pass_context
 def cli(ctx) -> None:
     # Load environment variables from .env file
+    # TODO: check if .env is found
     load_dotenv()
 
     # Create NestThermostat object
+    # TODO: Check if all env variables are configured
     ctx.obj = Nest(
         project_id=os.environ["PROJECT_ID"],
         device_id=os.environ["DEVICE_ID"],
@@ -162,7 +201,8 @@ def cli(ctx) -> None:
 )
 @click.pass_obj
 def set_trait(nest, temperature) -> None:
-    nest.set_temperature_setpoint(temperature)
+    if temperature:
+        nest.set_temperature_setpoint(temperature)
     return None
 
 
@@ -170,8 +210,9 @@ def set_trait(nest, temperature) -> None:
 @click.option("-h", "--humidity", is_flag=True, help="get ambient humidity percent")
 @click.option("-t", "--temperature", is_flag=True, help="get ambient temperature")
 @click.option("-s", "--setpoint", is_flag=True, help="get temperature setpoint")
+@click.option("-m", "--mode", is_flag=True, help="get thermostat mode")
 @click.pass_obj
-def get_trait(nest, humidity, temperature, setpoint) -> None:
+def get_trait(nest, humidity, temperature, setpoint, mode) -> None:
     traits = nest.fetch_device_traits()
     output = ""
     if humidity:
@@ -183,6 +224,9 @@ def get_trait(nest, humidity, temperature, setpoint) -> None:
     if setpoint:
         setpoint_value = nest.get_temperature_setpoint(traits)
         output += f"{setpoint_value} "
+    if mode:
+        mode_value = nest.get_mode(traits)
+        output += f"{mode_value}"
     click.echo(output.strip())
 
     return None
@@ -190,11 +234,18 @@ def get_trait(nest, humidity, temperature, setpoint) -> None:
 
 @cli.command("mode")
 @click.option("-o", "--off", is_flag=True, help="set thermostat mode to OFF")
-@click.option("-h", "--heat", is_flag=True, help="set thermostat mode to HEAT")
 @click.option("-e", "--eco", is_flag=True, help="set thermostat mode to ECO")
-def set_mode() -> None:
-    # TODO: Implement this functionality
-    raise NotImplementedError
+@click.option("-h", "--heat", is_flag=True, help="set thermostat mode to HEAT")
+@click.pass_obj
+def set_mode(nest, off, heat, eco) -> None:
+    # TODO: Decided what to do when multiple flag are given
+    if off:
+        nest.set_mode(mode="OFF")
+    elif eco:
+        nest.set_mode(mode="MANUAL_ECO")
+    else: # heat
+        nest.set_mode(mode="HEAT")
+    return None
 
 
 @cli.command("config")
