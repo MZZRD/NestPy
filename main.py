@@ -201,6 +201,7 @@ def cli(ctx) -> None:
 )
 @click.pass_obj
 def set_trait(nest, temperature) -> None:
+    # TODO: Decide if to merge set_mode with set_trait
     if temperature:
         nest.set_temperature_setpoint(temperature)
     return None
