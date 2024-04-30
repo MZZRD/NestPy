@@ -1,52 +1,47 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<style>
+  .code-block {
+    font-family: monospace;
+    background-color: #161b22;
+    color: #e6edf3;
+    padding: .2em .4em;
+    margin 0;
+    font-size: 1em;
+    white-space: break-spaces;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .code-input {
+    font-family: monospace;
+    color: #df00a9
+  }
+</style>
+
 <a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
 
 <!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+[![Python][python.org]][python-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
-
+[![Github Pages][github-pages]][github-pages-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/MZZRD/NestPy">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">NestPy</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    A command line interface (cli) and module, written in python, for your controlling your Nest Thermostat
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/MZZRD/NestPy/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/MZZRD/NestPy/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -83,8 +78,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
 Here's why:
@@ -97,25 +90,6 @@ Of course, no one template will serve all projects since your needs may be diffe
 Use the `BLANK_README.md` to get started.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -132,26 +106,42 @@ This is an example of how to list things you need to use the software and how to
   ```
 
 ### Installation
+Installation of this packages comprises of two main steps, acruiring the smart device management (SDM) API credentials and manually installing/configuring the python package. These steps are outlined in the consequent sections respectively.
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+#### Acquiring SDM API Credentials
+Before getting started, you need to register for Device Access. Registration involves accepting the Google API and Device Access Sandbox Terms of Service, as well as paying a one-time, non-refundable fee of US$5 per account.
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+For detailed instructions, including troubleshooting tips, please refer to the [official guide](https://developers.google.com/nest/device-access/registration).
+
+Next, create a project and obtain the required API keys/credentials by following the [Quick Start Guide](https://developers.google.com/nest/device-access/get-started).
+
+Note down the following API keys/credentials: project-id, device-id, access-token, refresh-token, oauth2-client-id, oauth2-client-secret for use later.
+
+Note the refresh-token will expire after 7 days if the project is in testing mode. If this happens follow the process outlined in https://developers.google.com/nest/device-access/authorize to get a new access and refresh token. More info can be found here https://developers.google.com/identity/protocols/oauth2#expiration
+
+#### Manual Package Install
+
+1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/MZZRD/NestPy.git
    ```
-3. Install NPM packages
+2. Go to the directory
+3. Install python requirements
    ```sh
-   npm install
+   pip -r requirements.txt
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Configure the API keys/credentials
+   ```sh
+   nestpy config --project-id ... \
+   --device-id ... \
+   --access-token ... \
+   --refresh-token ...\
+   --oauth2-client-id ...\
+   --oauth2-client-secret ...
    ```
+5. Optionally delete the cloned repo (maybe)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -175,7 +165,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] Chinese
     - [ ] Spanish
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/MZZRD/NestPy/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -239,17 +229,17 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[contributors-shield]: https://img.shields.io/github/contributors/MZZRD/NestPy.svg?style=for-the-badge
+[contributors-url]: https://github.com/MZZRD/NestPy/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/MZZRD/NestPy.svg?style=for-the-badge
+[forks-url]: https://github.com/MZZRD/NestPy/network/members
+[stars-shield]: https://img.shields.io/github/stars/MZZRD/NestPy.svg?style=for-the-badge
+[stars-url]: https://github.com/MZZRD/NestPy/stargazers
+[issues-shield]: https://img.shields.io/github/issues/MZZRD/NestPy.svg?style=for-the-badge
+[issues-url]: https://github.com/MZZRD/NestPy/issues
+[license-shield]: https://img.shields.io/github/license/MZZRD/NestPy.svg?style=for-the-badge
+[license-url]: https://github.com/MZZRD/NestPy/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
@@ -268,3 +258,16 @@ Use this space to list resources you find helpful and would like to give credit 
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[python-url]: https://python.org
+[github-pages]: https://img.shields.io/badge/about%20me-121013?style=for-the-badge&logo=github&logoColor=white
+[github-pages-url]: https://MZZRD.github.io
+
+
+<div class="code-block">nestpy config \
+  --project-id <span class="code-input" contenteditable="true">project-id</span> \
+  --device-id <span class="code-input" contenteditable="true">device-id</span> \
+  --access-token <span class="code-input" contenteditable="true">access-token</span> \
+  --refresh-token <span class="code-input" contenteditable="true">refresh-token</span> \
+  --oauth2-client-id <span class="code-input" contenteditable="true">oauth2-client-id</span> \
+  --oauth2-client-secret <span class="code-input" contenteditable="true">oauth2-client-secret</span></div>
