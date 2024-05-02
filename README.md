@@ -1,31 +1,15 @@
-<style>
-  .code-block {
-    font-family: monospace;
-    background-color: #161b22;
-    color: #e6edf3;
-    padding: .2em .4em;
-    margin 0;
-    font-size: 1em;
-    white-space: break-spaces;
-    border-radius: 6px;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-  }
-
-  .code-input {
-    font-family: monospace;
-    color: #df00a9
-  }
-</style>
-
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-[![Stargazers][stars-shield]][stars-url]
-[![MIT License][license-shield]][license-url]
-[![Python][python.org]][python-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-[![Github Pages][github-pages]][github-pages-url]
+<div align="center">
+
+  <a href="">[![Stargazers][stars-shield]][stars-url]</a>
+  <a href="">[![MIT License][license-shield]][license-url]</a>
+  <a href="">[![Python][python.org]][python-url]</a>
+  <a href="">[![LinkedIn][linkedin-shield]][linkedin-url]</a>
+  <a href="">[![Github Pages][github-pages]][github-pages-url]</a>
+
+</div>
 
 <!-- PROJECT LOGO -->
 <br />
@@ -121,7 +105,7 @@ Note the refresh-token will expire after 7 days if the project is in testing mod
 
 #### Manual Package Install
 
-1. Clone the repo
+1. Clone the repository
    ```sh
    git clone https://github.com/MZZRD/NestPy.git
    ```
@@ -130,28 +114,74 @@ Note the refresh-token will expire after 7 days if the project is in testing mod
    ```sh
    pip -r requirements.txt
    ```
-4. Configure the API keys/credentials
+4. Configure the API keys/credentials by replacing the ```...``` with the value corresponding to the options
    ```sh
-   nestpy config --project-id ... \
-   --device-id ... \
-   --access-token ... \
-   --refresh-token ...\
-   --oauth2-client-id ...\
-   --oauth2-client-secret ...
+   nestpy config \
+     --project-id ... \
+     --device-id ... \
+     --access-token ... \
+     --refresh-token ... \
+     --oauth2-client-id ... \
+     --oauth2-client-secret ...
    ```
-5. Optionally delete the cloned repo (maybe)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+You can use the `--help` option to get information about the available commands and their options.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+```txt
+Usage: nestpy [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  config
+  get
+  mode
+  set
+```
+
+Where `nestpy <COMMAND> --help` shows the options available for each command.
+
+### Setting Temperature Setpoint
+To set the temperature setpoint, use the `-t` option followed by the desired temperature in Celsius:
+```sh
+nestpy set -t 23
+```
+
+### Getting Traits
+The `get` command is used to get traits like the ambient humidity percentage `-h/--humidity`, ambient temperature `-t/--temperature`, temperature setpoint `-s/--setpoint` and thermostat mode `-m/--mode`. 
+
+Multiple options can be chained together, like so:
+```sh
+nestpy get -htsm
+```
+This command outputs:
+```txt
+65 20.75 20.5 HEAT
+```
+The values are printed inline, separated by a space character. Chaining options like this is faster than retrieving each option individually, as it only requires a single API request instead of multiple."
+
+### Setting Thermostat Mode
+The `mode` command is used to set the thermostat mode to either OFF `-o/--off`, MANUAL_ECO `-e/--eco` and HEAT `-h/--heat`.
+
+For instance, running the command:
+
+```sh
+nestpy mode -h
+```
+
+sets the thermostat mode to HEAT.
+
+> [!NOTE]
+> When the thermostat mode is set to MANUAL_ECO, it's not possible to retrieve information about the current temperature setpoint, nor is it possible to adjust it. To access information about the temperature setpoint again, switch the thermostat mode to HEAT.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->
@@ -168,7 +198,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 See the [open issues](https://github.com/MZZRD/NestPy/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- CONTRIBUTING -->
@@ -262,12 +291,3 @@ Use this space to list resources you find helpful and would like to give credit 
 [python-url]: https://python.org
 [github-pages]: https://img.shields.io/badge/about%20me-121013?style=for-the-badge&logo=github&logoColor=white
 [github-pages-url]: https://MZZRD.github.io
-
-
-<div class="code-block">nestpy config \
-  --project-id <span class="code-input" contenteditable="true">project-id</span> \
-  --device-id <span class="code-input" contenteditable="true">device-id</span> \
-  --access-token <span class="code-input" contenteditable="true">access-token</span> \
-  --refresh-token <span class="code-input" contenteditable="true">refresh-token</span> \
-  --oauth2-client-id <span class="code-input" contenteditable="true">oauth2-client-id</span> \
-  --oauth2-client-secret <span class="code-input" contenteditable="true">oauth2-client-secret</span></div>
