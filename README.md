@@ -77,44 +77,32 @@ Use the `BLANK_README.md` to get started.
 
 <!-- GETTING STARTED -->
 ## Getting Started
+Installation of this package comprises of two main steps, acruiring the smart device management (SDM) API credentials and manually installing and configuring the python package. These steps are outlined in the consequent sections respectively.
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+### Acquiring SDM API Credentials
+Before you begin, you'll need to register for Device Access. This involves accepting the Google API and Device Access Sandbox Terms of Service, as well as paying a one-time, non-refundable fee of US$5 per account.
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-Installation of this packages comprises of two main steps, acruiring the smart device management (SDM) API credentials and manually installing/configuring the python package. These steps are outlined in the consequent sections respectively.
-
-#### Acquiring SDM API Credentials
-Before getting started, you need to register for Device Access. Registration involves accepting the Google API and Device Access Sandbox Terms of Service, as well as paying a one-time, non-refundable fee of US$5 per account.
-
-For detailed instructions, including troubleshooting tips, please refer to the [official guide](https://developers.google.com/nest/device-access/registration).
+For detailed instructions and troubleshooting tips, please consult the [official guide](https://developers.google.com/nest/device-access/registration).
 
 Next, create a project and obtain the required API keys/credentials by following the [Quick Start Guide](https://developers.google.com/nest/device-access/get-started).
 
-Note down the following API keys/credentials: project-id, device-id, access-token, refresh-token, oauth2-client-id, oauth2-client-secret for use later.
+Make sure to note down the following API keys/credentials for later use: project-id, device-id, access-token, refresh-token, oauth2-client-id, and oauth2-client-secret.
 
-Note the refresh-token will expire after 7 days if the project is in testing mode. If this happens follow the process outlined in https://developers.google.com/nest/device-access/authorize to get a new access and refresh token. More info can be found here https://developers.google.com/identity/protocols/oauth2#expiration
+> [!NOTE]
+> The refresh-token will expire after 7 days if the project is in testing mode. If this happens, follow the process outlined in [Google's Device Access Authorization Guide](https://developers.google.com/nest/device-access/authorize) to obtain a new access and refresh token. For more information on token expiration, refer to the [OAuth 2.0 Token Expiration documentation](https://developers.google.com/identity/protocols/oauth2#expiration).
 
-#### Manual Package Install
+### Manual Package Install
 
-1. Clone the repository
+1. Clone the repository:
    ```sh
    git clone https://github.com/MZZRD/NestPy.git
    ```
-2. Go to the directory
-3. Install python requirements
+2. Navigate to the directory
+3. Install Python requirements:
    ```sh
-   pip -r requirements.txt
+   pip install -r requirements.txt
    ```
-4. Configure the API keys/credentials by replacing the ```...``` with the value corresponding to the options
+4. Configure API keys/credentials by replacing the placeholders (...) with the corresponding values for each option:
    ```sh
    nestpy config \
      --project-id ... \
