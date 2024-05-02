@@ -180,7 +180,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Maarten ten Voorde - [LinkedIn]([https://twitter.com/your_username](https://www.linkedin.com/in/maarten-ten-voorde-jb/)) - m.tenvoorde1998@gmail.com
+Maarten ten Voorde - [LinkedIn][linkedin-url] - m.tenvoorde1998@gmail.com
 
 Project Link: [https://github.com/MZZRD/NestPy](https://github.com/MZZRD/NestPy)
 
