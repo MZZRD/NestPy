@@ -133,7 +133,7 @@ Commands:
 Where `nestpy <COMMAND> --help` shows the options available for each command.
 
 ### Setting Temperature Setpoint
-To set the temperature setpoint, use the `-t` option followed by the desired temperature in Celsius:
+To set the temperature setpoint, use the `-t/--temperature` option followed by the desired temperature in Celsius:
 ```sh
 nestpy set -t 23
 ```
