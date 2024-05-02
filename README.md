@@ -94,9 +94,9 @@ Make sure to note down the following API keys/credentials for later use: project
    git clone https://github.com/MZZRD/NestPy.git
    ```
 2. Navigate to the directory
-3. Install Python requirements:
+3. Install Python package:
    ```sh
-   pip install -r requirements.txt
+   pip install .
    ```
 4. Configure API keys/credentials by replacing the placeholders (...) with the corresponding values for each option:
    ```sh

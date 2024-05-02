@@ -179,6 +179,7 @@ class Nest(object):
 def cli(ctx) -> None:
     # Load environment variables from .env file
     # TODO: check if .env is found
+    # TODO: If not, skip creating the ctx object and refer user to config
     load_dotenv()
 
     # Create NestThermostat object
