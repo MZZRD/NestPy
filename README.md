@@ -191,9 +191,9 @@ Project Link: [https://github.com/MZZRD/NestPy](https://github.com/MZZRD/NestPy)
 [stars-shield]: https://img.shields.io/github/stars/MZZRD/NestPy.svg?style=for-the-badge
 [stars-url]: https://github.com/MZZRD/NestPy/stargazers
 [license-shield]: https://img.shields.io/github/license/MZZRD/NestPy.svg?style=for-the-badge
-[license-url]: https://github.com/MZZRD/NestPy/blob/master/LICENSE.txt
+[license-url]: https://github.com/MZZRD/NestPy/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
-[linkedin-url]: [https://linkedin.com/in/othneildrew](https://www.linkedin.com/in/maarten-ten-voorde-jb/)
+[linkedin-url]: https://www.linkedin.com/in/maarten-ten-voorde-jb/
 [python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
 [python-url]: https://python.org
 [github-pages]: https://img.shields.io/badge/about%20me-121013?style=for-the-badge&logo=github&logoColor=white
