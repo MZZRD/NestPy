@@ -21,7 +21,7 @@
   <h3 align="center">NestPy</h3>
 
   <p align="center">
-    A command line interface (cli) and module, written in python, for your controlling your Nest Thermostat
+    A command line interface (cli) and module, written in python, for interfacing with your Nest Thermostat
     <br />
     <a href="https://github.com/MZZRD/NestPy/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
