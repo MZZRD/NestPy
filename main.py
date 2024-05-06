@@ -1,5 +1,5 @@
 import os
-from dotenv import find_dotenv, load_dotenv, set_key
+from dotenv import find_dotenv, load_dotenv, set_key, get_key, dotenv_values
 import click
 import requests
 
@@ -7,28 +7,28 @@ import requests
 class Nest(object):
     def __init__(
         self,
-        project_id: str,
-        device_id: str,
-        access_token: str,
-        refresh_token: str,
-        oauth2_client_id: str,
-        oauth2_client_secret: str,
+        PROJECT_ID: str,
+        DEVICE_ID: str,
+        ACCESS_TOKEN: str,
+        REFRESH_TOKEN: str,
+        OAUTH2_CLIENT_ID: str,
+        OAUTH2_CLIENT_SECRET: str,
     ):
         # HTTP request variables
         self.end_point = "https://smartdevicemanagement.googleapis.com/v1"
-        self.call = f"enterprises/{project_id}/devices/{device_id}"
+        self.call = f"enterprises/{PROJECT_ID}/devices/{DEVICE_ID}"
         self.url = f"{self.end_point}/{self.call}"
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {access_token}",
+            "Authorization": f"Bearer {ACCESS_TOKEN}",
         }
 
         # oauth2 variables
         self.oauth2_url = "https://www.googleapis.com/oauth2/v4/token"
         self.oauth2_data = {
-            "client_id": oauth2_client_id,
-            "client_secret": oauth2_client_secret,
-            "refresh_token": refresh_token,
+            "client_id": OAUTH2_CLIENT_ID,
+            "client_secret": OAUTH2_CLIENT_SECRET,
+            "refresh_token": REFRESH_TOKEN,
             "grant_type": "refresh_token",
         }
 
@@ -177,21 +177,32 @@ class Nest(object):
 @click.version_option("0.1.0", prog_name="NestPy")
 @click.pass_context
 def cli(ctx) -> None:
-    # Load environment variables from .env file
-    # TODO: check if .env is found
-    # TODO: If not, skip creating the ctx object and refer user to config
-    load_dotenv()
-
-    # Create NestThermostat object
-    # TODO: Check if all env variables are configured
-    ctx.obj = Nest(
-        project_id=os.environ["PROJECT_ID"],
-        device_id=os.environ["DEVICE_ID"],
-        access_token=os.environ["ACCESS_TOKEN"],
-        refresh_token=os.environ["REFRESH_TOKEN"],
-        oauth2_client_id=os.environ["OAUTH2_CLIENT_ID"],
-        oauth2_client_secret=os.environ["OAUTH2_CLIENT_SECRET"],
-    )
+    # Define .env path
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    dotenv_path = os.path.join(script_dir, ".env")
+    
+    # Check if .env file exists
+    found_dotenv = load_dotenv(dotenv_path)
+    if not found_dotenv:
+        if ctx.invoked_subcommand != 'config':
+            raise SystemExit("No config file has been found, see 'nestpy config --help'")
+        return None
+     
+    # Create Nest object
+    env_vars = dotenv_values(dotenv_path)
+    try:
+        ctx.obj = Nest(**env_vars)
+    except TypeError as err:
+        # Notify the user to configure missing options when using any command other than 'config'.
+        if ctx.invoked_subcommand == 'config':
+            return None
+        # Modify error message
+        err_str = str(err)
+        missing_args = err_str.split(': ')[1].lower().replace('_', '-')
+        msg = f"Please configure the missing options: {missing_args}"
+        raise SystemExit(msg)
+        
+            
 
     return None
 
@@ -255,8 +266,10 @@ def set_mode(nest, off, heat, eco) -> None:
 @click.option("--device-id", type=click.STRING, default=None)
 @click.option("--access-token", type=click.STRING, default=None)
 @click.option("--refresh-token", type=click.STRING, default=None)
-def config(project_id, device_id, access_token, refresh_token) -> None:
-    # Set the .env path in the package directory
+@click.option("--oauth2-client-id", type=click.STRING, default=None)
+@click.option("--oauth2-client-secret", type=click.STRING, default=None)
+def config(project_id, device_id, access_token, refresh_token, oauth2_client_id, oauth2_client_secret) -> None:
+    # Define the .env path in the package directory
     script_dir = os.path.dirname(os.path.realpath(__file__))
     dotenv_path = os.path.join(script_dir, ".env")
 
@@ -266,6 +279,8 @@ def config(project_id, device_id, access_token, refresh_token) -> None:
         "DEVICE_ID": device_id,
         "ACCESS_TOKEN": access_token,
         "REFRESH_TOKEN": refresh_token,
+        "OAUTH2_CLIENT_ID": oauth2_client_id,
+        "OAUTH2_CLIENT_SECRET": oauth2_client_secret
     }
 
     # Iterate over the dictionary and set key values if the argument is not None
