@@ -1,5 +1,5 @@
 import os
-from dotenv import find_dotenv, load_dotenv, set_key, get_key, dotenv_values
+from dotenv import find_dotenv, load_dotenv, set_key, dotenv_values
 import click
 import requests
 
@@ -38,7 +38,7 @@ class Nest(object):
             r = requests.post(url=self.oauth2_url, data=self.oauth2_data)
             r.raise_for_status()
         except requests.exceptions.HTTPError:
-            raise SystemExit("Error: Invalid OAuth2 credentials")
+            raise SystemExit("Error: One or more credentials are invalid. A common cause is the refresh token becoming invalid.")
 
         # Update access token in headers
         response = r.json()
@@ -58,7 +58,7 @@ class Nest(object):
             r = requests.get(url=self.url, headers=self.headers)
             r.raise_for_status()
         except requests.exceptions.HTTPError:
-            # Aunauthorized error (401), attempt to refresh access token
+            # Anauthorized error (401), attempt to refresh access token
             self.refresh_access_token()
             try:
                 r = requests.get(url=self.url, headers=self.headers)
@@ -177,19 +177,19 @@ class Nest(object):
 @click.version_option("0.1.0", prog_name="NestPy")
 @click.pass_context
 def cli(ctx) -> None:
-    # Define .env path
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    dotenv_path = os.path.join(script_dir, ".env")
-    
     # Check if .env file exists
-    found_dotenv = load_dotenv(dotenv_path)
+    found_dotenv = load_dotenv()
     if not found_dotenv:
         if ctx.invoked_subcommand != 'config':
             raise SystemExit("No config file has been found, see 'nestpy config --help'")
         return None
      
-    # Create Nest object
+    
+    # Load .env variables
+    dotenv_path = find_dotenv()
     env_vars = dotenv_values(dotenv_path)
+    
+    # Create Nest object
     try:
         ctx.obj = Nest(**env_vars)
     except TypeError as err:
