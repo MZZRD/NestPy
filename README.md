@@ -163,7 +163,7 @@ nestpy mode -h
 sets the thermostat mode to HEAT.
 
 > [!NOTE]
-> When the thermostat mode is set to MANUAL_ECO, it's not possible to retrieve information about the current temperature setpoint, nor is it possible to adjust it. To access information about the temperature setpoint again, switch the thermostat mode to HEAT.
+> When the thermostat mode is set to OFF/MANUAL_ECO, it's not possible to set the current temperature setpoint, but it is possible to retrieve information about it. To be able to set the temperature setpoint again, switch the thermostat mode to HEAT.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
