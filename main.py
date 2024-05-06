@@ -87,8 +87,10 @@ class Nest(object):
                     url=f"{self.url}:executeCommand", headers=self.headers, json=payload
                 )
                 r.raise_for_status()
-            except requests.exceptions.RequestException as e:
-                raise SystemExit(e)
+            except requests.exceptions.RequestException:
+                # TODO: Other causes might trigger this exception; find a better way to handle this specific occasion.
+                raise SystemExit("ERROR: Cannot set temperature setpoint while the mode is set to OFF or MANUAL_ECO.")
+        # except requests.exceptions
         return None
 
     def get_ambient_humidity_percent(self, traits: dict[str, any] = None) -> int:
@@ -119,9 +121,15 @@ class Nest(object):
         if traits is None:
             traits = self.fetch_device_traits()
 
-        # Extract desired trait
+        # Extract desired traits
         setpoint_trait = traits["sdm.devices.traits.ThermostatTemperatureSetpoint"]
-        temperature_setpoint = setpoint_trait["heatCelsius"]
+        eco_trait = traits["sdm.devices.traits.ThermostatEco"]
+        
+        # Get temperature_setpoint, depends on current mode (OFF: 0.0, MANUAL_ECO: ...)
+        temperature_setpoint = setpoint_trait.get("heatCelsius", 0.0)
+        if eco_trait["mode"] == "MANUAL_ECO":
+            temperature_setpoint = eco_trait["heatCelsius"]
+        
         return temperature_setpoint
 
     def get_mode(self, traits: dict[str, any] = None) -> str:
@@ -146,7 +154,6 @@ class Nest(object):
     
     def set_temperature_setpoint(self, value: float) -> None:
         """Set the temperature setpoint in celsius"""
-        # TODO: "400 client Error" if mode OFF or MANUAL_ECO
         payload = {
             "command": "sdm.devices.commands.ThermostatTemperatureSetpoint.SetHeat",
             "params": {"heatCelsius": value},
@@ -227,6 +234,7 @@ def set_trait(nest, temperature) -> None:
 @click.pass_obj
 def get_trait(nest, humidity, temperature, setpoint, mode) -> None:
     traits = nest.fetch_device_traits()
+    
     output = ""
     if humidity:
         humidity_value = nest.get_ambient_humidity_percent(traits)
@@ -250,7 +258,7 @@ def get_trait(nest, humidity, temperature, setpoint, mode) -> None:
 @click.option("-e", "--eco", is_flag=True, help="set thermostat mode to ECO")
 @click.option("-h", "--heat", is_flag=True, help="set thermostat mode to HEAT")
 @click.pass_obj
-def set_mode(nest, off, heat, eco) -> None:
+def set_mode(nest, off, eco, heat) -> None:
     # TODO: Decided what to do when multiple flag are given
     if off:
         nest.set_mode(mode="OFF")
